@@ -1,7 +1,26 @@
 #include <stdio.h>
 
+struct Movimentacao {
+  double valor;
+  char descricao[100];
+  char data[100];
+};
+
+void gravarArquivo(struct Movimentacao m) {
+  printf("\nGravar arquivo\n");
+}
+
 void cadastrar() {
+  struct Movimentacao nova;
   printf("\nCadastrar receita/gasto\n");
+  printf("Valor: R$ ");
+  scanf("%lf", &nova.valor);
+  printf("Descricao: ");
+  scanf(" %[^\n]s", nova.descricao);
+  printf("Data (dd/mm/aa): ");
+  scanf("%s", nova.data);
+  gravarArquivo(nova);
+  printf("\nMovimentacao cadastrada com sucesso!\n");
 }
 
 void visualizarCategorias() {
