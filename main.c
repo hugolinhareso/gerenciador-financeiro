@@ -7,7 +7,11 @@ struct Movimentacao {
 };
 
 void gravarArquivo(struct Movimentacao m) {
-  printf("\nGravar arquivo\n");
+  FILE *fr = fopen("movimentacoes.txt", "a");
+  fprintf(fr, "%lf\n", m.valor);
+  fprintf(fr, "%s\n", m.descricao);
+  fprintf(fr, "%s\n", m.data);
+  fclose(fr);
 }
 
 void cadastrar() {
@@ -28,7 +32,10 @@ void visualizarCategorias() {
 }
 
 void gerarRelatorio() {
-  printf("\nGerar Relatorio HTML\n");
+  FILE *fr = fopen("relatorio.html", "w");
+  fprintf(fr, "<html lang=\"br\">\n<head>\n<meta charset=\"UTF-8\">\n<title>Relatório de movimentações</title>\n</head>\n<body>\n<h1>Relatório</h1>\n</body>\n</html>");
+  fclose(fr);
+  printf("\nRelatorio criado com sucesso!\n");
 }
 
 void sair() {
