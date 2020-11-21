@@ -19,9 +19,33 @@ void gravarArquivo(struct Movimentacao m) {
   fclose(fr);
 }
 
+// Limpa o lixo de memória para não errar comparações
+void limparVetor(char *v, int n) {
+  for (int i = 0; i < n; i++) {
+    v[i] = '\0';
+  }
+}
+
+// Lê a categoria necessária no cadastro e no relatório por cat.
+void lerCat(char *cat) {
+  int aux = 0;
+  printf("Categoria (0 - Moradia, 1 - Estudos, 2 - Transporte, 3 - Alimentacao, 4 - Trabalho): ");
+  scanf("%d", &aux);
+  if (aux == 0) {
+    strcpy(cat, "Moradia");
+  } else if (aux == 1) {
+    strcpy(cat, "Estudos");
+  } else if (aux == 2) {
+    strcpy(cat, "Transporte");
+  } else if (aux == 3) {
+    strcpy(cat, "Alimentacao");
+  } else if (aux == 4) {
+    strcpy(cat, "Trabalho");
+  }
+}
+
 // Cadastra uma nova receita/gasto
 void cadastrar() {
-  int aux = 0;
   struct Movimentacao nova;
   printf("\nCadastrar receita/gasto (adicionar sinal -)\n");
   printf("Valor: R$ ");
@@ -30,28 +54,16 @@ void cadastrar() {
   scanf(" %[^\n]s", nova.descricao);
   printf("Data (dd/mm/aa): ");
   scanf("%s", nova.data);
-  printf("Categoria (0 - Moradia, 1 - Estudos, 2 - Transporte, 3 - Alimentacao, 4 - Trabalho): ");
-  scanf("%d", &aux);
-  
-  if (aux == 0) {
-    strcpy(nova.categoria, "Moradia");
-  } else if (aux == 1) {
-    strcpy(nova.categoria, "Estudos");
-  } else if (aux == 2) {
-    strcpy(nova.categoria, "Transporte");
-  } else if (aux == 3) {
-    strcpy(nova.categoria, "Alimentacao");
-  } else if (aux == 4) {
-    strcpy(nova.categoria, "Trabalho");
-  }
+  lerCat(nova.categoria);
 
   gravarArquivo(nova);
   printf("\nMovimentacao cadastrada com sucesso!\n");
 }
 
 // Gera o relatorio das movimentacoes por categoria
-void gerarRelatorioCat() {
+void gerarRelatorioCat(char *cat) {
   struct Movimentacao mov;
+  int igual = 1; // Recebe 1 se as categorias são iguais e 0, senão.
 
   FILE *fr = fopen("movimentacoes.txt", "r");
   FILE *html = fopen("relatorio_cat.html", "w");
@@ -64,9 +76,18 @@ void gerarRelatorioCat() {
   fprintf(html, "<tr><th>Descricao</th><th>Valor R$</th><th>Data (dd/mm/aa)</th><th>Categoria</th></tr>\n");
 
   while (fscanf(fr, "%lf", &mov.valor) != EOF) {
-      fscanf(fr, " %[^\n]s", mov.descricao);
-      fscanf(fr,  "%s %s", mov.data, mov.categoria);
-      fprintf(html, "<tr><td>%s</th><td>%.2lf</td><td>%s</td><td>%s</td></tr>\n", mov.descricao, mov.valor, mov.data, mov.categoria);
+    igual = 1;
+    limparVetor(mov.categoria, 100);
+    fscanf(fr, " %[^\n]s", mov.descricao);
+    fscanf(fr,  "%s %s", mov.data, mov.categoria);
+    for (int i = 0; i < 100; i++) {
+      if (mov.categoria[i] != cat[i]) {
+        igual = 0;
+      }
+    }
+    if (igual) {
+      fprintf(html, "<tr><td>%s</td><td>%.2lf</td><td>%s</td><td>%s</td></tr>\n", mov.descricao, mov.valor, mov.data, mov.categoria);
+    }
   }
 
   fprintf(html, "</table>\n</body>\n</html>\n");
@@ -90,9 +111,9 @@ void gerarRelatorio12() {
   fprintf(html, "<tr><th>Descricao</th><th>Valor R$</th><th>Data (dd/mm/aa)</th><th>Categoria</th></tr>\n");
 
   while (fscanf(fr, "%lf", &mov.valor) != EOF) {
-      fscanf(fr, " %[^\n]s", mov.descricao);
-      fscanf(fr,  "%s %s", mov.data, mov.categoria);
-      fprintf(html, "<tr><td>%s</th><td>%.2lf</td><td>%s</td><td>%s</td></tr>\n", mov.descricao, mov.valor, mov.data, mov.categoria);
+    fscanf(fr, " %[^\n]s", mov.descricao);
+    fscanf(fr,  "%s %s", mov.data, mov.categoria);
+    fprintf(html, "<tr><td>%s</td><td>%.2lf</td><td>%s</td><td>%s</td></tr>\n", mov.descricao, mov.valor, mov.data, mov.categoria);
   }
 
   fprintf(html, "</table>\n</body>\n</html>\n");
@@ -126,7 +147,11 @@ void menu() {
       cadastrar();
     } else if (op == 2) {
       i = 0;
-      gerarRelatorioCat();
+      char cat[100];
+      limparVetor(cat, 100);
+      printf("Escolha uma categoria para gerar o relatorio:\n");
+      lerCat(cat);
+      gerarRelatorioCat(cat);
     } else if (op == 3) {
       i = 0;
       gerarRelatorio12();
