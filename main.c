@@ -19,19 +19,6 @@ void gravarArquivo(struct Movimentacao m) {
   fclose(fr);
 }
 
-// Lê o arquivo e salva os elementos em uma lista de char
-void lerArquivo(char *v) {
-  char aux[100];
-  FILE *fr = fopen("movimentacoes.txt", "r");
-  int i = 0;
-
-  while (fscanf(fr, "%s", aux) != EOF) {
-    i++;
-  }
-
-  fclose(fr);
-}
-
 // Cadastra uma nova receita/gasto
 void cadastrar() {
   int aux = 0;
