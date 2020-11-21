@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 // Estrutura de uma movimentacao
 struct Movimentacao {
@@ -8,6 +9,24 @@ struct Movimentacao {
   char data[100];
   char categoria[100];
 };
+
+// Estrutura de data
+struct Data {
+  int dia;
+  int mes;
+  int ano;
+};
+
+// Salva a data atual em uma estrutura
+void verifDataAtual(struct Data* data) {
+  struct tm *atual;
+  time_t segundos;
+  time(&segundos); 
+  atual = localtime(&segundos);
+  data->dia = atual->tm_mday;
+  data->mes = atual->tm_mon + 1; 
+  data->ano = atual->tm_year + 1900;
+}
 
 // Grava a nova movimentacao em um arquivo txt
 void gravarArquivo(struct Movimentacao m) {
@@ -19,14 +38,14 @@ void gravarArquivo(struct Movimentacao m) {
   fclose(fr);
 }
 
-// Limpa o lixo de memória para não errar comparações
+// Limpa o lixo de memoria para nao errar comparacoes
 void limparVetor(char *v, int n) {
   for (int i = 0; i < n; i++) {
     v[i] = '\0';
   }
 }
 
-// Lê a categoria necessária no cadastro e no relatório por cat.
+// Le a categoria necessaria no cadastro e no relatorio por cat.
 void lerCat(char *cat) {
   int aux = 0;
   printf("Categoria (0 - Moradia, 1 - Estudos, 2 - Transporte, 3 - Alimentacao, 4 - Trabalho): ");
@@ -63,7 +82,7 @@ void cadastrar() {
 // Gera o relatorio das movimentacoes por categoria
 void gerarRelatorioCat(char *cat) {
   struct Movimentacao mov;
-  int igual = 1; // Recebe 1 se as categorias são iguais e 0, senão.
+  int igual = 1; // Recebe 1 se as categorias sao iguais e 0, senao.
 
   FILE *fr = fopen("movimentacoes.txt", "r");
   FILE *html = fopen("relatorio_cat.html", "w");
@@ -161,6 +180,8 @@ void menu() {
 
 // Funcao principal
 int main(void) {
+  struct Data data;
+  verifDataAtual(&data);
   menu();
   return 0;
 }
