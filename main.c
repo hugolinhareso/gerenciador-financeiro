@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// Estrutura de uma movimentacao
 struct Movimentacao {
   double valor;
   char descricao[100];
@@ -8,6 +9,7 @@ struct Movimentacao {
   char categoria[100];
 };
 
+// Grava a nova movimentacao em um arquivo txt
 void gravarArquivo(struct Movimentacao m) {
   FILE *fr = fopen("movimentacoes.txt", "a");
   fprintf(fr, "%.2lf\n", m.valor);
@@ -17,6 +19,20 @@ void gravarArquivo(struct Movimentacao m) {
   fclose(fr);
 }
 
+// Lê o arquivo e salva os elementos em uma lista de char
+void lerArquivo(char *v) {
+  char aux[100];
+  FILE *fr = fopen("movimentacoes.txt", "r");
+  int i = 0;
+
+  while (fscanf(fr, "%s", aux) != EOF) {
+    i++;
+  }
+
+  fclose(fr);
+}
+
+// Cadastra uma nova receita/gasto
 void cadastrar() {
   int aux = 0;
   struct Movimentacao nova;
@@ -46,24 +62,64 @@ void cadastrar() {
   printf("\nMovimentacao cadastrada com sucesso!\n");
 }
 
+// Gera o relatorio das movimentacoes por categoria
 void gerarRelatorioCat() {
-  FILE *fr = fopen("relatorio_cat.html", "w");
-  fprintf(fr, "<html lang=\"br\">\n<head>\n<meta charset=\"UTF-8\">\n<title>Relatório - Categorias</title>\n</head>\n<body>\n<h1>Relatório</h1>\n</body>\n</html>");
+  struct Movimentacao mov;
+
+  FILE *fr = fopen("movimentacoes.txt", "r");
+  FILE *html = fopen("relatorio_cat.html", "w");
+
+  fprintf(html, "<html lang=\"br\">\n");
+  fprintf(html, "<head>\n<meta charset=\"UTF-8\">\n");
+  fprintf(html, "<title>Relatório por categoria</title>\n");
+  fprintf(html, "</head>\n<body>\n");
+  fprintf(html, "<table border=\"1\">\n");
+  fprintf(html, "<tr><th>Descricao</th><th>Valor R$</th><th>Data (dd/mm/aa)</th><th>Categoria</th></tr>\n");
+
+  while (fscanf(fr, "%lf", &mov.valor) != EOF) {
+      fscanf(fr, " %[^\n]s", mov.descricao);
+      fscanf(fr,  "%s %s", mov.data, mov.categoria);
+      fprintf(html, "<tr><td>%s</th><td>%.2lf</td><td>%s</td><td>%s</td></tr>\n", mov.descricao, mov.valor, mov.data, mov.categoria);
+  }
+
+  fprintf(html, "</table>\n</body>\n</html>\n");
   fclose(fr);
-  printf("\nRelatorio das movimentacoes por categoria criado com sucesso!\n");
+  fclose(html);
+  printf("\nRelatorio por categoria criado com sucesso!\n");
 }
 
+// Gera o relatorio das movimentacoes dos ultimos 12 meses
 void gerarRelatorio12() {
-  FILE *fr = fopen("relatorio.html", "w");
-  fprintf(fr, "<html lang=\"br\">\n<head>\n<meta charset=\"UTF-8\">\n<title>Relatório - Últimos 12 meses</title>\n</head>\n<body>\n<h1>Relatório</h1>\n</body>\n</html>");
+  struct Movimentacao mov;
+
+  FILE *fr = fopen("movimentacoes.txt", "r");
+  FILE *html = fopen("relatorio.html", "w");
+
+  fprintf(html, "<html lang=\"br\">\n");
+  fprintf(html, "<head>\n<meta charset=\"UTF-8\">\n");
+  fprintf(html, "<title>Relatório - últimos 12 meses</title>\n");
+  fprintf(html, "</head>\n<body>\n");
+  fprintf(html, "<table border=\"1\">\n");
+  fprintf(html, "<tr><th>Descricao</th><th>Valor R$</th><th>Data (dd/mm/aa)</th><th>Categoria</th></tr>\n");
+
+  while (fscanf(fr, "%lf", &mov.valor) != EOF) {
+      fscanf(fr, " %[^\n]s", mov.descricao);
+      fscanf(fr,  "%s %s", mov.data, mov.categoria);
+      fprintf(html, "<tr><td>%s</th><td>%.2lf</td><td>%s</td><td>%s</td></tr>\n", mov.descricao, mov.valor, mov.data, mov.categoria);
+  }
+
+  fprintf(html, "</table>\n</body>\n</html>\n");
   fclose(fr);
-  printf("\nRelatorio dos ultimos 12 meses criado com sucesso!\n");
+  fclose(html);
+  printf("\nRelatorio dos últimos 12 meses criado com sucesso!\n");
 }
 
+// Saida do programa
 void sair() {
   printf("\nObrigado por usar o programa. Ate logo!\n");
 }
 
+// Menu principal
 void menu() {
   int i = -1, op = -1;
   while (i == -1) {
@@ -91,6 +147,7 @@ void menu() {
   }
 }
 
+// Funcao principal
 int main(void) {
   menu();
   return 0;
