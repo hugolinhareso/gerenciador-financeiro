@@ -2,3 +2,19 @@
 BK
 11/11/20
 Alimentacao
+1200.00
+Salario
+21/11/20
+Trabalho
+-15.00
+MC Donalds
+18/11/20
+Alimentacao
+250.25
+Bonus
+14/11/20
+Trabalho
+75.00
+Alura
+10/11/20
+Estudos

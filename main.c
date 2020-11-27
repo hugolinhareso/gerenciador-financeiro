@@ -10,22 +10,23 @@ struct Movimentacao {
   char categoria[100];
 };
 
-// Estrutura de data
-struct Data {
-  int dia;
-  int mes;
-  int ano;
-};
+// Retorna uma data para segundos
+int converteData(int dia, int mes, int ano) {
+  struct tm tm = {};
+  tm.tm_mday = dia;
+  tm.tm_mon  = mes - 1;
+  tm.tm_year = ano - 1900;
+  time_t tempo = mktime(&tm);
+  return tempo;
+}
 
-// Salva a data atual em uma estrutura
-void verifDataAtual(struct Data* data) {
+// Retorna a data atual em segundos
+int verifDataAtual() {
   struct tm *atual;
   time_t segundos;
   time(&segundos); 
   atual = localtime(&segundos);
-  data->dia = atual->tm_mday;
-  data->mes = atual->tm_mon + 1; 
-  data->ano = atual->tm_year + 1900;
+  return segundos;
 }
 
 // Grava a nova movimentacao em um arquivo txt
@@ -150,7 +151,7 @@ void sair() {
 void menu() {
   int i = -1, op = -1;
   while (i == -1) {
-    printf("Gerenciador financeiro:\n");
+    printf("\nGerenciador financeiro:\n");
     printf("1 - Cadastrar receita/gasto\n");
     printf("2 - Movimentacoes por categoria\n");
     printf("3 - Movimentacoes nos ultimos 12 meses\n");
@@ -162,7 +163,6 @@ void menu() {
       i = 0;
       sair();
     } else if (op == 1) {
-      i = 0;
       cadastrar();
     } else if (op == 2) {
       i = 0;
@@ -180,8 +180,7 @@ void menu() {
 
 // Funcao principal
 int main(void) {
-  struct Data data;
-  verifDataAtual(&data);
   menu();
   return 0;
+  // 2592000 -> segundos em um mês
 }
