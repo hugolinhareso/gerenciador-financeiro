@@ -64,6 +64,47 @@ void lerCat(char *cat) {
   }
 }
 
+// Ordena o arquivo por data (mais recentes em cima)
+void ordenarArquivo() {
+  struct Movimentacao movs[400];
+  struct Movimentacao mov;
+  struct Movimentacao aux;
+  char str[11];
+  int dias[400];
+  int dia=0, mes=0, ano=0, data=0, i=0, j=0, k=0, n=0, aux1=0;
+  FILE *fr = fopen("movimentacoes.txt", "r");
+  while (fscanf(fr, "%lf", &mov.valor) != EOF) {
+    fscanf(fr, " %[^\n]s", mov.descricao);
+    fscanf(fr, "%d/%d/%d", &dia, &mes, &ano);
+    fscanf(fr,  "%s", mov.categoria);
+    snprintf(str, 11, "%d/%d/%d", dia, mes, ano);
+    strcpy(mov.data, str);
+    data = converteData(dia, mes, ano);
+    dias[i] = data;
+    movs[i] = mov;
+    i++;
+  }
+  n = i;
+  for (k = 0; k < n - 1; k++) {
+    for (j = 0; j < n - k - 1; j++) {
+      if (dias[j] < dias[j+1]) {
+        aux = movs[j];
+        movs[j] = movs[j+1];
+        movs[j+1] = aux;
+        aux1 = dias[j];
+        dias[j] = dias[j+1];
+        dias[j+1] = aux1;
+      }
+    }
+  }
+  fclose(fr);
+  FILE *f = fopen("movimentacoes.txt", "w");
+  for (i = 0; i < n; i++) {
+    fprintf(f, "%.2lf\n%s\n%s\n%s\n", movs[i].valor, movs[i].descricao, movs[i].data, movs[i].categoria);
+  }
+  fclose(f);
+}
+
 // Cadastra uma nova receita/gasto
 void cadastrar() {
   struct Movimentacao nova;
@@ -77,6 +118,7 @@ void cadastrar() {
   lerCat(nova.categoria);
 
   gravarArquivo(nova);
+  ordenarArquivo();
   printf("\nMovimentacao cadastrada com sucesso!\n");
 }
 
@@ -188,6 +230,7 @@ void menu() {
 
 // Funcao principal
 int main(void) {
+  ordenarArquivo();
   menu();
   return 0;
   // 2592000 -> segundos em um mês

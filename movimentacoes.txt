@@ -1,7 +1,3 @@
--50.00
-BK
-11/11/2020
-Alimentacao
 1200.00
 Salario
 21/11/2020
@@ -14,11 +10,15 @@ Alimentacao
 Bonus
 14/11/2020
 Trabalho
+-50.00
+BK
+11/11/2020
+Alimentacao
 75.00
 Alura
 10/11/2020
 Estudos
 1200.00
 Faculdade
-10/09/2018
+10/9/2018
 Estudos
