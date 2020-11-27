@@ -73,6 +73,7 @@ void ordenarArquivo() {
   int dias[400];
   int dia=0, mes=0, ano=0, data=0, i=0, j=0, k=0, n=0, aux1=0;
   FILE *fr = fopen("movimentacoes.txt", "r");
+  
   while (fscanf(fr, "%lf", &mov.valor) != EOF) {
     fscanf(fr, " %[^\n]s", mov.descricao);
     fscanf(fr, "%d/%d/%d", &dia, &mes, &ano);
@@ -84,7 +85,9 @@ void ordenarArquivo() {
     movs[i] = mov;
     i++;
   }
+  
   n = i;
+  
   for (k = 0; k < n - 1; k++) {
     for (j = 0; j < n - k - 1; j++) {
       if (dias[j] < dias[j+1]) {
@@ -97,11 +100,14 @@ void ordenarArquivo() {
       }
     }
   }
+  
   fclose(fr);
+  
   FILE *f = fopen("movimentacoes.txt", "w");
   for (i = 0; i < n; i++) {
     fprintf(f, "%.2lf\n%s\n%s\n%s\n", movs[i].valor, movs[i].descricao, movs[i].data, movs[i].categoria);
   }
+  
   fclose(f);
 }
 
@@ -119,6 +125,7 @@ void cadastrar() {
 
   gravarArquivo(nova);
   ordenarArquivo();
+  
   printf("\n-------------------------------------------------------------\n");
   printf("\nMovimentacao cadastrada com sucesso!\n");
   printf("\n-------------------------------------------------------------\n");
@@ -136,11 +143,12 @@ void gerarRelatorioCat(char *cat, int dataAtual) {
 
   fprintf(html, "<html lang=\"br\">\n");
   fprintf(html, "<head>\n<meta charset=\"UTF-8\">\n");
-  fprintf(html, "<title>Relatório por categoria (ultimos 30 dias)</title>\n");
+  fprintf(html, "<link rel=\"stylesheet\" href=\"style.css\">\n");
+  fprintf(html, "<title>Relatório por categoria (últimos 30 dias)</title>\n");
   fprintf(html, "</head>\n<body>\n");
-  fprintf(html, "<h1>Relatório por categoria (ultimos 30 dias) - %s</h1>\n", cat);
-  fprintf(html, "<table border=\"1\">\n");
-  fprintf(html, "<tr><th>Descricao</th><th>Valor R$</th><th>Data (dd/mm/aaaa)</th><th>Categoria</th></tr>\n");
+  fprintf(html, "<h1 class=\"title\">Relatório por categoria (últimos 30 dias) - %s</h1>\n", cat);
+  fprintf(html, "<table class=\"table\">\n");
+  fprintf(html, "<tr><th>Descrição</th><th>Valor em R$</th><th>Data (dd/mm/aaaa)</th><th>Categoria</th></tr>\n");
 
   while (fscanf(fr, "%lf", &mov.valor) != EOF) {
     igual = 1;
@@ -162,6 +170,7 @@ void gerarRelatorioCat(char *cat, int dataAtual) {
   fprintf(html, "</table>\n</body>\n</html>\n");
   fclose(fr);
   fclose(html);
+  
   printf("\n-------------------------------------------------------------\n");
   printf("\nRelatorio por categoria (ultimos 30 dias) criado com sucesso!\n");
   printf("\n-------------------------------------------------------------\n");
@@ -178,11 +187,12 @@ void gerarRelatorio12(int dataAtual) {
 
   fprintf(html, "<html lang=\"br\">\n");
   fprintf(html, "<head>\n<meta charset=\"UTF-8\">\n");
+  fprintf(html, "<link rel=\"stylesheet\" href=\"style.css\">\n");
   fprintf(html, "<title>Relatório - últimos 12 meses</title>\n");
   fprintf(html, "</head>\n<body>\n");
-  fprintf(html, "<h1>Relatorio dos últimos 12 meses</h1>\n");
-  fprintf(html, "<table border=\"1\">\n");
-  fprintf(html, "<tr><th>Descricao</th><th>Valor R$</th><th>Data (dd/mm/aaaa)</th><th>Categoria</th></tr>\n");
+  fprintf(html, "<h1 class=\"title\">Relatório dos últimos 12 meses</h1>\n");
+  fprintf(html, "<table class=\"table\">\n");
+  fprintf(html, "<tr><th>Descrição</th><th>Valor em R$</th><th>Data (dd/mm/aaaa)</th><th>Categoria</th></tr>\n");
 
   while (fscanf(fr, "%lf", &mov.valor) != EOF) {
     fscanf(fr, " %[^\n]s", mov.descricao);
@@ -197,6 +207,7 @@ void gerarRelatorio12(int dataAtual) {
   fprintf(html, "</table>\n</body>\n</html>\n");
   fclose(fr);
   fclose(html);
+  
   printf("\n-------------------------------------------------------------\n");
   printf("\nRelatorio dos últimos 12 meses criado com sucesso!\n");
   printf("\n-------------------------------------------------------------\n");
