@@ -209,7 +209,7 @@ void gerarRelatorio12(int dataAtual) {
   fclose(html);
   
   printf("\n-------------------------------------------------------------\n");
-  printf("\nRelatorio dos últimos 12 meses criado com sucesso!\n");
+  printf("\nRelatorio dos ultimos 12 meses criado com sucesso!\n");
   printf("\n-------------------------------------------------------------\n");
 }
 
