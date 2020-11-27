@@ -113,17 +113,20 @@ void cadastrar() {
   scanf("%lf", &nova.valor);
   printf("Descricao: ");
   scanf(" %[^\n]s", nova.descricao);
-  printf("Data (dd/mm/aa): ");
+  printf("Data (dd/mm/aaaa): ");
   scanf("%s", nova.data);
   lerCat(nova.categoria);
 
   gravarArquivo(nova);
   ordenarArquivo();
+  printf("\n-------------------------------------------------------------\n");
   printf("\nMovimentacao cadastrada com sucesso!\n");
+  printf("\n-------------------------------------------------------------\n");
 }
 
 // Gera o relatorio das movimentacoes por categoria
 void gerarRelatorioCat(char *cat, int dataAtual) {
+  // 2592000 -> segundos em um mês
   struct Movimentacao mov;
   int igual = 1; // Recebe 1 se as categorias sao iguais e 0, senao.
   int dia=0, mes=0, ano=0, data=0;
@@ -133,10 +136,11 @@ void gerarRelatorioCat(char *cat, int dataAtual) {
 
   fprintf(html, "<html lang=\"br\">\n");
   fprintf(html, "<head>\n<meta charset=\"UTF-8\">\n");
-  fprintf(html, "<title>Relatório por categoria</title>\n");
+  fprintf(html, "<title>Relatório por categoria (ultimos 30 dias)</title>\n");
   fprintf(html, "</head>\n<body>\n");
+  fprintf(html, "<h1>Relatório por categoria (ultimos 30 dias) - %s</h1>\n", cat);
   fprintf(html, "<table border=\"1\">\n");
-  fprintf(html, "<tr><th>Descricao</th><th>Valor R$</th><th>Data (dd/mm/aa)</th><th>Categoria</th></tr>\n");
+  fprintf(html, "<tr><th>Descricao</th><th>Valor R$</th><th>Data (dd/mm/aaaa)</th><th>Categoria</th></tr>\n");
 
   while (fscanf(fr, "%lf", &mov.valor) != EOF) {
     igual = 1;
@@ -158,11 +162,14 @@ void gerarRelatorioCat(char *cat, int dataAtual) {
   fprintf(html, "</table>\n</body>\n</html>\n");
   fclose(fr);
   fclose(html);
-  printf("\nRelatorio por categoria criado com sucesso!\n");
+  printf("\n-------------------------------------------------------------\n");
+  printf("\nRelatorio por categoria (ultimos 30 dias) criado com sucesso!\n");
+  printf("\n-------------------------------------------------------------\n");
 }
 
 // Gera o relatorio das movimentacoes dos ultimos 12 meses
 void gerarRelatorio12(int dataAtual) {
+  // 31104000 -> segundos em um ano
   struct Movimentacao mov;
   int dia=0, mes=0, ano=0, data=0;
 
@@ -173,8 +180,9 @@ void gerarRelatorio12(int dataAtual) {
   fprintf(html, "<head>\n<meta charset=\"UTF-8\">\n");
   fprintf(html, "<title>Relatório - últimos 12 meses</title>\n");
   fprintf(html, "</head>\n<body>\n");
+  fprintf(html, "<h1>Relatorio dos últimos 12 meses</h1>\n");
   fprintf(html, "<table border=\"1\">\n");
-  fprintf(html, "<tr><th>Descricao</th><th>Valor R$</th><th>Data (dd/mm/aa)</th><th>Categoria</th></tr>\n");
+  fprintf(html, "<tr><th>Descricao</th><th>Valor R$</th><th>Data (dd/mm/aaaa)</th><th>Categoria</th></tr>\n");
 
   while (fscanf(fr, "%lf", &mov.valor) != EOF) {
     fscanf(fr, " %[^\n]s", mov.descricao);
@@ -189,12 +197,16 @@ void gerarRelatorio12(int dataAtual) {
   fprintf(html, "</table>\n</body>\n</html>\n");
   fclose(fr);
   fclose(html);
+  printf("\n-------------------------------------------------------------\n");
   printf("\nRelatorio dos últimos 12 meses criado com sucesso!\n");
+  printf("\n-------------------------------------------------------------\n");
 }
 
 // Saida do programa
 void sair() {
+  printf("\n-------------------------------------------------------------\n");
   printf("\nObrigado por usar o programa. Ate logo!\n");
+  printf("\n-------------------------------------------------------------\n");
 }
 
 // Menu principal
@@ -203,7 +215,7 @@ void menu() {
   while (i == -1) {
     printf("\nGerenciador financeiro:\n");
     printf("1 - Cadastrar receita/gasto\n");
-    printf("2 - Movimentacoes por categoria\n");
+    printf("2 - Movimentacoes por categoria (ultimos 30 dias)\n");
     printf("3 - Movimentacoes nos ultimos 12 meses\n");
     printf("0 - Sair do programa\n");
     printf("Escolha uma opcao: ");
@@ -215,14 +227,12 @@ void menu() {
     } else if (op == 1) {
       cadastrar();
     } else if (op == 2) {
-      i = 0;
       char cat[100];
       limparVetor(cat, 100);
       printf("Escolha uma categoria para gerar o relatorio:\n");
       lerCat(cat);
       gerarRelatorioCat(cat, dataAtual);
     } else if (op == 3) {
-      i = 0;
       gerarRelatorio12(dataAtual);
     }
   }
@@ -233,6 +243,4 @@ int main(void) {
   ordenarArquivo();
   menu();
   return 0;
-  // 2592000 -> segundos em um mês
-  // 31104000 -> segundos em um ano
 }
