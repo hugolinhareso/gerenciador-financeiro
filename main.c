@@ -81,9 +81,10 @@ void cadastrar() {
 }
 
 // Gera o relatorio das movimentacoes por categoria
-void gerarRelatorioCat(char *cat) {
+void gerarRelatorioCat(char *cat, int dataAtual) {
   struct Movimentacao mov;
   int igual = 1; // Recebe 1 se as categorias sao iguais e 0, senao.
+  int dia=0, mes=0, ano=0, data=0;
 
   FILE *fr = fopen("movimentacoes.txt", "r");
   FILE *html = fopen("relatorio_cat.html", "w");
@@ -99,14 +100,16 @@ void gerarRelatorioCat(char *cat) {
     igual = 1;
     limparVetor(mov.categoria, 100);
     fscanf(fr, " %[^\n]s", mov.descricao);
-    fscanf(fr,  "%s %s", mov.data, mov.categoria);
+    fscanf(fr, "%d/%d/%d", &dia, &mes, &ano);
+    fscanf(fr,  "%s", mov.categoria);
+    data = converteData(dia, mes, ano);
     for (int i = 0; i < 100; i++) {
       if (mov.categoria[i] != cat[i]) {
         igual = 0;
       }
     }
-    if (igual) {
-      fprintf(html, "<tr><td>%s</td><td>%.2lf</td><td>%s</td><td>%s</td></tr>\n", mov.descricao, mov.valor, mov.data, mov.categoria);
+    if (igual && ((dataAtual-2592000 <= data) && (data <= dataAtual))) {
+      fprintf(html, "<tr><td>%s</td><td>%.2lf</td><td>%2d/%2d/%4d</td><td>%s</td></tr>\n", mov.descricao, mov.valor, dia, mes, ano, mov.categoria);
     }
   }
 
@@ -117,8 +120,9 @@ void gerarRelatorioCat(char *cat) {
 }
 
 // Gera o relatorio das movimentacoes dos ultimos 12 meses
-void gerarRelatorio12() {
+void gerarRelatorio12(int dataAtual) {
   struct Movimentacao mov;
+  int dia=0, mes=0, ano=0, data=0;
 
   FILE *fr = fopen("movimentacoes.txt", "r");
   FILE *html = fopen("relatorio.html", "w");
@@ -132,8 +136,12 @@ void gerarRelatorio12() {
 
   while (fscanf(fr, "%lf", &mov.valor) != EOF) {
     fscanf(fr, " %[^\n]s", mov.descricao);
-    fscanf(fr,  "%s %s", mov.data, mov.categoria);
-    fprintf(html, "<tr><td>%s</td><td>%.2lf</td><td>%s</td><td>%s</td></tr>\n", mov.descricao, mov.valor, mov.data, mov.categoria);
+    fscanf(fr, "%d/%d/%d", &dia, &mes, &ano);
+    fscanf(fr,  "%s", mov.categoria);
+    data = converteData(dia, mes, ano);
+    if ((dataAtual-31104000 <= data) && (data <= dataAtual)) {
+      fprintf(html, "<tr><td>%s</td><td>%.2lf</td><td>%d/%d/%d</td><td>%s</td></tr>\n", mov.descricao, mov.valor, dia, mes, ano, mov.categoria);
+    }
   }
 
   fprintf(html, "</table>\n</body>\n</html>\n");
@@ -149,7 +157,7 @@ void sair() {
 
 // Menu principal
 void menu() {
-  int i = -1, op = -1;
+  int i = -1, op = -1, dataAtual = verifDataAtual();
   while (i == -1) {
     printf("\nGerenciador financeiro:\n");
     printf("1 - Cadastrar receita/gasto\n");
@@ -170,10 +178,10 @@ void menu() {
       limparVetor(cat, 100);
       printf("Escolha uma categoria para gerar o relatorio:\n");
       lerCat(cat);
-      gerarRelatorioCat(cat);
+      gerarRelatorioCat(cat, dataAtual);
     } else if (op == 3) {
       i = 0;
-      gerarRelatorio12();
+      gerarRelatorio12(dataAtual);
     }
   }
 }
@@ -183,4 +191,5 @@ int main(void) {
   menu();
   return 0;
   // 2592000 -> segundos em um mês
+  // 31104000 -> segundos em um ano
 }
