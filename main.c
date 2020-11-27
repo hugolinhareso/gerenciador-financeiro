@@ -133,7 +133,7 @@ void cadastrar() {
 
 // Gera o relatorio das movimentacoes por categoria
 void gerarRelatorioCat(char *cat, int dataAtual) {
-  // 2592000 -> segundos em um mês
+  // 2592000 -> segundos em um mês (30 dias)
   struct Movimentacao mov;
   int igual = 1; // Recebe 1 se as categorias sao iguais e 0, senao.
   int dia=0, mes=0, ano=0, data=0;
@@ -178,7 +178,7 @@ void gerarRelatorioCat(char *cat, int dataAtual) {
 
 // Gera o relatorio das movimentacoes dos ultimos 12 meses
 void gerarRelatorio12(int dataAtual) {
-  // 31104000 -> segundos em um ano
+  // 31536000 -> segundos em um ano (365 dias)
   struct Movimentacao mov;
   int dia=0, mes=0, ano=0, data=0;
 
@@ -199,7 +199,7 @@ void gerarRelatorio12(int dataAtual) {
     fscanf(fr, "%d/%d/%d", &dia, &mes, &ano);
     fscanf(fr, "%s", mov.categoria);
     data = converteData(dia, mes, ano);
-    if ((dataAtual-31104000 <= data) && (data <= dataAtual)) {
+    if ((data >= dataAtual-31536000) && (dataAtual >= data)) {
       fprintf(html, "<tr><td>%s</td><td>%.2lf</td><td>%d/%d/%d</td><td>%s</td></tr>\n", mov.descricao, mov.valor, dia, mes, ano, mov.categoria);
     }
   }
