@@ -76,7 +76,7 @@ void ordenarArquivo() {
   while (fscanf(fr, "%lf", &mov.valor) != EOF) {
     fscanf(fr, " %[^\n]s", mov.descricao);
     fscanf(fr, "%d/%d/%d", &dia, &mes, &ano);
-    fscanf(fr,  "%s", mov.categoria);
+    fscanf(fr, "%s", mov.categoria);
     snprintf(str, 11, "%d/%d/%d", dia, mes, ano);
     strcpy(mov.data, str);
     data = converteData(dia, mes, ano);
@@ -147,7 +147,7 @@ void gerarRelatorioCat(char *cat, int dataAtual) {
     limparVetor(mov.categoria, 100);
     fscanf(fr, " %[^\n]s", mov.descricao);
     fscanf(fr, "%d/%d/%d", &dia, &mes, &ano);
-    fscanf(fr,  "%s", mov.categoria);
+    fscanf(fr, "%s", mov.categoria);
     data = converteData(dia, mes, ano);
     for (int i = 0; i < 100; i++) {
       if (mov.categoria[i] != cat[i]) {
@@ -187,7 +187,7 @@ void gerarRelatorio12(int dataAtual) {
   while (fscanf(fr, "%lf", &mov.valor) != EOF) {
     fscanf(fr, " %[^\n]s", mov.descricao);
     fscanf(fr, "%d/%d/%d", &dia, &mes, &ano);
-    fscanf(fr,  "%s", mov.categoria);
+    fscanf(fr, "%s", mov.categoria);
     data = converteData(dia, mes, ano);
     if ((dataAtual-31104000 <= data) && (data <= dataAtual)) {
       fprintf(html, "<tr><td>%s</td><td>%.2lf</td><td>%d/%d/%d</td><td>%s</td></tr>\n", mov.descricao, mov.valor, dia, mes, ano, mov.categoria);
@@ -200,6 +200,45 @@ void gerarRelatorio12(int dataAtual) {
   printf("\n-------------------------------------------------------------\n");
   printf("\nRelatorio dos últimos 12 meses criado com sucesso!\n");
   printf("\n-------------------------------------------------------------\n");
+}
+
+// Imprime no terminal a media de gastos ou ganhos (Todo o periodo)
+// Opcao 0 -> Ganhos; Opcao 1 -> Gastos
+void calcularMedia(int opcao) {
+  struct Movimentacao mov;
+  double media = 0;
+  int n = 0;
+  FILE *fr = fopen("movimentacoes.txt", "r");
+  
+  while (fscanf(fr, "%lf", &mov.valor) != EOF) {
+    fscanf(fr, " %[^\n]s", mov.descricao);
+    fscanf(fr, "%s %s", mov.data, mov.categoria);
+
+    if (mov.valor > 0 && opcao == 0) {
+      media += mov.valor;
+      n++;
+    } else if (mov.valor < 0 && opcao == 1) {
+      media += mov.valor;
+      n++;
+    }
+  }
+
+  media /= n;
+  
+  if (opcao == 0) {
+    printf("\n-------------------------------------------------------------\n");    
+    printf("\nSua media de ganhos e de R$ %.2lf.\n", media);
+    printf("\n-------------------------------------------------------------\n");
+  
+  } else if (opcao == 1) {
+    printf("\n-------------------------------------------------------------\n");
+   
+    printf("\nSua media de gastos e de R$ %.2lf.\n", media);
+    printf("\n-------------------------------------------------------------\n");
+  
+  }
+  
+  fclose(fr);
 }
 
 // Saida do programa
@@ -217,6 +256,8 @@ void menu() {
     printf("1 - Cadastrar receita/gasto\n");
     printf("2 - Movimentacoes por categoria (ultimos 30 dias)\n");
     printf("3 - Movimentacoes nos ultimos 12 meses\n");
+    printf("4 - Media de ganhos (todo o periodo)\n");
+    printf("5 - Media de gastos (todo o periodo)\n");
     printf("0 - Sair do programa\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &op);
@@ -234,6 +275,10 @@ void menu() {
       gerarRelatorioCat(cat, dataAtual);
     } else if (op == 3) {
       gerarRelatorio12(dataAtual);
+    } else if (op == 4) {
+      calcularMedia(0);
+    } else if (op == 5) {
+      calcularMedia(1);
     }
   }
 }
