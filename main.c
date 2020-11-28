@@ -252,6 +252,32 @@ void calcularMedia(int opcao) {
   fclose(fr);
 }
 
+// Imprime o saldo atual com base nos ultimos 30 dias
+void saldo(int dataAtual) {
+  struct Movimentacao mov;
+  double saldo = 0;
+  int dia=0, mes=0, ano=0, data=0;
+  FILE *fr = fopen("movimentacoes.txt", "r");
+
+  while (fscanf(fr, "%lf", &mov.valor) != EOF) {
+    fscanf(fr, " %[^\n]s", mov.descricao);
+    fscanf(fr, "%d/%d/%d", &dia, &mes, &ano);
+    fscanf(fr, "%s", mov.categoria);
+    data = converteData(dia, mes, ano);
+
+    if ((dataAtual-2592000 <= data) && (data <= dataAtual)) {
+      saldo += mov.valor;
+    }
+  }
+
+  fclose(fr);
+
+  printf("\n-------------------------------------------------------------\n");
+  
+  printf("\nSeu saldo atual e de R$ %.2lf.\n", saldo);
+  printf("\n-------------------------------------------------------------\n");
+}
+
 // Saida do programa
 void sair() {
   printf("\n-------------------------------------------------------------\n");
@@ -269,6 +295,7 @@ void menu() {
     printf("3 - Movimentacoes nos ultimos 12 meses\n");
     printf("4 - Media de ganhos (todo o periodo)\n");
     printf("5 - Media de gastos (todo o periodo)\n");
+    printf("6 - Saldo (ultimos 30 dias)\n");
     printf("0 - Sair do programa\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &op);
@@ -290,6 +317,8 @@ void menu() {
       calcularMedia(0);
     } else if (op == 5) {
       calcularMedia(1);
+    } else if (op == 6) {
+      saldo(dataAtual);
     }
   }
 }
