@@ -5,6 +5,8 @@ Gerenciador financeiro construindo para o projeto da disciplina CC2632 - Desenvo
 ## 🛠️ Construído com
 
 * Linguagem C
+* HTML
+* CSS
 
 ## ✒️ Autores
 
