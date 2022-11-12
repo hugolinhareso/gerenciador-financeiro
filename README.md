@@ -1,13 +1,18 @@
-# GerenciadorFinanceiro
+# gerenciador-financeiro
 
-Gerenciador financeiro construido para o projeto da disciplina CC2632 - Desenvolvimento de Algoritmos. O objetivo do projeto era aplicar os conceitos aprendidos sobre a linguagem C, criando um sistema no qual podemos adicionar e gerar relatórios dos ganhos e gastos pessoais.
+Financial manager built for a project of the Algorithm Development course. The project's objective was to apply the concepts learned about the C language, creating a system in which we can add and generate reports of personal gains and expenses.
 
-## 🛠️ Construído com
+## 🚀 Usage
 
-* Linguagem C
-* HTML
-* CSS
+Make sure you have [GCC](https://gcc.gnu.org/) or another C compiler installed.
 
-## ✒️ Autores
+Just run the following command at the root of project:
 
-* **Hugo Linhares** - [Linkedin](https://br.linkedin.com/in/hugo-linhares-8743781b6)
+```sh
+gcc main.c -o main.out
+./main.out
+```
+
+## 📝 License
+
+This project is [MIT](https://github.com/hugolinhareso/gerenciador-financeiro/blob/main/LICENSE) licensed.
